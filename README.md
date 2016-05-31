@@ -38,8 +38,13 @@ Eg.  L10000102ffffff|50000809aaaaaa|
 ```
 
 <H1> Raspberry Pi </h1>
-THe 
+The raspberry pi I2C client can be used to send command to the Nano from the Pi.
+
+to build the program use
+```
+gcc i2cstring.c -o i2cstring
+```
 
 
-./i2cstring RAINBOWS\|
+./i2cstring RAINBOWS\\|
 
