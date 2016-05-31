@@ -3,10 +3,13 @@ Project to drive an Arduino Nano with Neopixels using Serial / Bluetooth / I2C
 
 The Arduino Nano is set to read commands via the SERIAL in (TTY / Bluetooth) or via the I2C.  all commands are the same regardless of method of input.
 
+<h1> Arduino Nano</h1>
+
 if the demo pin is set to "HIGH" the nano will go into an automated "Demo" mode and not read any serial input.
 
 Serial commands are seperated by a "|" character
 
+```
 Commands are:
 
 Read:[?|]
@@ -32,9 +35,9 @@ Read:[?|]
   BB = Blue Color
 
 Eg.  L10000102ffffff|50000809aaaaaa|
+```
 
-
-<H2> Raspberry Pi </h2>
+<H1> Raspberry Pi </h1>
 THe 
 
 
