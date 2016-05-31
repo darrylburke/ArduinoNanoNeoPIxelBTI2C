@@ -1,5 +1,5 @@
 # ArduinoNanoNeoPIxelBTI2C
-Project to drive an Arduino Nano with Neopixels using Serial / Bluetooth / I2C
+Project to drive an Arduino Nano with Neopixels using Serial / Bluetooth / I2C or with an Android Bluetooth client
 
 The Arduino Nano is set to read commands via the SERIAL in (TTY / Bluetooth) or via the I2C.  all commands are the same regardless of method of input.
 
@@ -42,9 +42,11 @@ The raspberry pi I2C client can be used to send command to the Nano from the Pi.
 
 to build the program use
 ```
-gcc i2cstring.c -o i2cstring
+gcc I2CClient.c -o I2CClient
 ```
 
+./I2CClient RAINBOWS\\|
 
-./i2cstring RAINBOWS\\|
+<h1> Android</h1>
 
+For android I use the BlueTooth Serial Controller program in the [Google Play Store](https://play.google.com/store/apps/details?id=nextprototypes.BTSerialController)
