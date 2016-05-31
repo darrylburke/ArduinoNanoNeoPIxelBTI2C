@@ -44,6 +44,8 @@ to build the program use
 ```
 gcc I2CClient.c -o I2CClient
 ```
+*Note*  you can also send these commands via the USB cable to the Arduino from the Raspberry pi using a standard USB data cable.. it will also power the Nano from the Pi USB!
+
 
 ./I2CClient RAINBOWS\\|
 
