@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 #include <Adafruit_NeoPixel.h>
 #include <Wire.h>
@@ -8,7 +9,7 @@ long strtol (const char *__nptr, char **__endptr, int __base);
 #define SLAVE_ADDRESS 0x04
 int number = 0;
 int state = 0;
-double temp;
+
 String inString = "";
 
 
@@ -17,7 +18,6 @@ String inString = "";
 
 //Pins for debug more..  short 3 & 4 and demo mode starts automatically.. if not then it waits for serial input
 //
-#define BTPOWER       2
 #define LPIN          3
 #define IPIN          4
 #define HPIN          5
@@ -46,11 +46,11 @@ int intensity=50;
 boolean demomode=false;
 int democounter=0;
 
-String tmpinput="";
+//String tmpinput="";
 boolean run = false;
-String X = "";
+//String X = "";
 long cr,cg,cb;
-int testmode =0;
+
 
 void setup() {
    pinMode(13, OUTPUT);
@@ -63,10 +63,6 @@ void setup() {
  
    pixels.begin(); // This initializes the NeoPixel library.
    pinMode(1, OUTPUT); //on board LED used for diag if you need it
-
-   pinMode(BTPOWER,OUTPUT);
-   digitalWrite(BTPOWER,HIGH);
-   
    
    pinMode(HPIN, OUTPUT);
    digitalWrite(HPIN,HIGH);
@@ -74,13 +70,12 @@ void setup() {
    digitalWrite(LPIN,LOW);
 
    pinMode (IPIN,INPUT);
-   testmode = digitalRead(IPIN);
+   //testmode = digitalRead(IPIN);
    Serial.begin(9600);
    Serial.setTimeout(500);
    
    stop();
-    setall(0,NUMPIXELS,255,255,255,true);
-   
+   setall(0,NUMPIXELS,255,255,255,true);
    delay(2000); // Delay for a period of time (in milliseconds).
 
    stop();
@@ -128,7 +123,6 @@ void getColors(String gcinput){
     Serial.println("]");
     return;
   }
-
 
   long number = strtol( &gcinput[0], NULL, 16);
   
@@ -251,10 +245,11 @@ void cycle() {
 long sToI(String in){
 return (strtol( &in[0], NULL, 16));
 }
+
 void setLEDs(String slinput){
 
       
-  int llen=slinput.length();
+ int llen=slinput.length();
  int groups = llen / 14;
  Serial.print("Setting LEDs:[");
  Serial.print(slinput);
@@ -264,34 +259,33 @@ void setLEDs(String slinput){
  Serial.print(groups);
  Serial.println("]");
   for (int x=0; x< groups;x++) {
+
+      String group = slinput.substring(x*15,x*15+14);
       Serial.print("Group: [");
       Serial.print(x);
       Serial.print("] ");
-      String group = slinput.substring(x*15,x*15+14);
       Serial.println(group);
 
-
-
       String tmpdelay=group.substring(0,4);
-      int mydelay = tmpdelay.toInt();
-      String tmpLEDS = group.substring(4,14);
+     // String tmpLEDS=group.substring(4,14);
+
+      String startled=group.substring(4,6);
+      String endled=group.substring(6,8);
+      String colors=group.substring(8,14);
+      int mydelay = group.substring(0,4).toInt();
       
-      Serial.println(tmpLEDS);
+      
       Serial.print("Delay:[");
       Serial.print(mydelay);
       Serial.print("] Tmp:[");
       Serial.print(tmpdelay);
-      Serial.print("] LEDS:[");
-      Serial.print(tmpLEDS);
-      
+      Serial.println("]");
       
   
-      String colors=tmpLEDS.substring(4,10);
-      String startled=tmpLEDS.substring(0,2);
-      String endled=tmpLEDS.substring(2,4);
+    
 
       
-      Serial.print("} Start LED:[");
+      Serial.print("Start LED:[");
       Serial.print(startled);
       Serial.print("] End LED:[");
       Serial.print(endled);
@@ -350,8 +344,6 @@ void processInput(String input){
       Serial.println(" COP - Police Lights Mode");
       Serial.println(" COPCAR - Police Car Lights Mode");
       Serial.println(" WORM - Worm Mode");
-      
-      
       Serial.println(" CYCLONE - Cyclone Lights Mode");
       Serial.println(" STROBE - Strobe Lights Mode");
       Serial.println(" RAINBOWS - Rainbow Lights Mode - Individual Pixels");
@@ -365,7 +357,7 @@ void processInput(String input){
       Serial.println("  RR = Red Color");
       Serial.println("  GG = Green Color");
       Serial.println("  BB = Blue Color");
-      tmpinput="";
+ 
       
    }else if (input.startsWith("A")){
       stop();
@@ -378,12 +370,10 @@ void processInput(String input){
       }
       getColors(input.substring(1,7));
       setall(0,NUMPIXELS,cr,cg,cb,true);
-      
-
-      
+     
    } else if (input.startsWith("L")){
-     if (run==true){
-      stop();
+      if (run==true){
+        stop();
       }
       String newinput=input.substring(1,input.length());//String Leading L
       int len = newinput.length();
@@ -394,16 +384,11 @@ void processInput(String input){
       Serial.println(rem);
       if (rem != 0){
         Serial.println("Invalid parameters != 15");
-       // Serial.println(10);
         return;
       }
       
       setLEDs(newinput);
-//      if (len > 15){
-//        String newcommand="L";
-//        newcommand += newinput.substring(15);
-//      processInput(newcommand);
-     // }
+
    } else if (input.startsWith("COPCAR")){
         Serial.println("Starting COPCAR");
         currentmode=COPCAR;
@@ -459,35 +444,15 @@ void processInput(String input){
    
 }
 
-void testfast() {
 
-    
-    ClearLights();
-      
-      for (int ii=0;ii<100;ii++){
-          for(int i=0;i<NUMPIXELS;i++){
-            ClearLights();
-            pixels.setPixelColor(i, pixels.Color(255,0,0)); 
-            pixels.show();
-           // delay(1);
-            pixels.setPixelColor(i, pixels.Color(0,255,0)); 
-            pixels.show();
-          //  delay(1);
-            pixels.setPixelColor(i, pixels.Color(0,0,255)); 
-            pixels.show();
-          //  delay(1);
-          }
-      }
-      
-}
 void copcar(){
 
 
-for (int i = (pixels.numPixels() / 2); i < pixels.numPixels(); i = i + 1) {
-      pixels.setPixelColor(i, 0);
-    }
-    
-for (int x=0;x<12;x++){
+  for (int i = (pixels.numPixels() / 2); i < pixels.numPixels(); i = i + 1) {
+        pixels.setPixelColor(i, 0);
+      }
+      
+  for (int x=0;x<12;x++){
      
         setall(0,(pixels.numPixels() / 2)-1,0,0,255,true);
         delay(50);
@@ -500,8 +465,6 @@ for (int x=0;x<12;x++){
         setall(0,(pixels.numPixels() / 2)-1,0,0,255,true);
         delay(50);
         setall(0,(pixels.numPixels() / 2)-1,0,0,0,true);
-
-        
         delay(250);
         setall(pixels.numPixels() / 2,NUMPIXELS,0,255,0,true);
         delay(50);
@@ -515,46 +478,44 @@ for (int x=0;x<12;x++){
         delay(50);
         setall(pixels.numPixels() / 2,NUMPIXELS,0,0,0,true);
         delay(50);
-    }
+  }
   delay(500);
-  ArrowLeft(pixels.Color(0, 0, 255), 100); // Blue
-  ArrowRight(pixels.Color(0, 255, 0), 100); //Red
-
-  // These are side to side or wig/wag
-  WigWag(pixels.Color(0,255, 0), 200); // Red
-  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
-  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
-  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
-  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
-  WigWag(pixels.Color(0, 0, 255), 63); // Blue faster
-  WigWag(pixels.Color(0, 0, 255), 127); // Blue medium
-  WigWag(pixels.Color(0, 0, 255), 255); // Blue slowest
-  //WigWag(pixels.Color(0, 255, 0), 200); // Green
-  //WigWag(pixels.Color(255, 255, 0), 200); // Yellow
-  ClearLights();
-  delay(1000);
-  // This is a 2 color wigwag
-  WigWag2(pixels.Color(0, 0, 255), pixels.Color(0, 255, 0), 200); // Blue and Red
-  ClearLights();
-  delay(1000);
-
-  // Blinks the outer most lights
-  BlinkOuter(pixels.Color(0, 0, 255), 200,15); //Blue
-  BlinkOuter(pixels.Color(0, 0, 255), 50,50); //Blue faster
-  //BlinkOuter(pixels.Color(255, 255, 0), 200,10); //Yellow
-  ClearLights();
-  delay(1000);
-
-  // Turns the outer most lights on
-  OnOuter(pixels.Color(0,63, 0)); // Red 25%
-  OnOuter(pixels.Color(0,127, 0)); // Red 50%
-  OnOuter(pixels.Color(0,191, 0)); // Red 75%
-  OnOuter(pixels.Color(0,255, 0)); // Red 100%
-  ClearLights();
-  delay(1000);
-  OnOuter(pixels.Color(0, 0, 255)); // Blue
-  //OnOuter(pixels.Color(255, 255, 0)); // Green
-  // Turns off all lights
+//  ArrowLeft(pixels.Color(0, 0, 255), 100); // Blue
+//  ArrowRight(pixels.Color(0, 255, 0), 100); //Red
+//
+//  // These are side to side or wig/wag
+//  WigWag(pixels.Color(0,255, 0), 200); // Red
+//  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
+//  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
+//  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
+//  WigWag(pixels.Color(255, 255, 255), 30); // Blue faster
+//  WigWag(pixels.Color(0, 0, 255), 63); // Blue faster
+//  WigWag(pixels.Color(0, 0, 255), 127); // Blue medium
+//  WigWag(pixels.Color(0, 0, 255), 255); // Blue slowest
+//  ClearLights();
+//  delay(1000);
+//  // This is a 2 color wigwag
+//  WigWag2(pixels.Color(0, 0, 255), pixels.Color(0, 255, 0), 200); // Blue and Red
+//  ClearLights();
+//  delay(1000);
+//
+//  // Blinks the outer most lights
+//  BlinkOuter(pixels.Color(0, 0, 255), 200,15); //Blue
+//  BlinkOuter(pixels.Color(0, 0, 255), 50,50); //Blue faster
+//  //BlinkOuter(pixels.Color(255, 255, 0), 200,10); //Yellow
+//  ClearLights();
+//  delay(1000);
+//
+//  // Turns the outer most lights on
+//  OnOuter(pixels.Color(0,63, 0)); // Red 25%
+//  OnOuter(pixels.Color(0,127, 0)); // Red 50%
+//  OnOuter(pixels.Color(0,191, 0)); // Red 75%
+//  OnOuter(pixels.Color(0,255, 0)); // Red 100%
+//  ClearLights();
+//  delay(1000);
+//  OnOuter(pixels.Color(0, 0, 255)); // Blue
+//  //OnOuter(pixels.Color(255, 255, 0)); // Green
+//  // Turns off all lights
   ClearLights();
   delay(5000);
 }
@@ -664,16 +625,13 @@ void OnOuter(uint32_t c) {
 void rainbow(uint8_t wait) {
   uint16_t i, j,x;
   for (x=0;x<1;x++) {
-    
-  
-  for(j=0; j<256; j++) {
-    for(i=0; i<pixels.numPixels(); i++) {
-      pixels.setPixelColor(i, Wheel((j) & 255));
+    for(j=0; j<256; j++) {
+      for(i=0; i<pixels.numPixels(); i++) {
+        pixels.setPixelColor(i, Wheel((j) & 255));
+      }
+      pixels.show();
+      delay(wait);
     }
-//    if(analogRead(sensorPin)>10) return;  // exit function
-    pixels.show();
-    delay(wait);
-  }
   }
   
 }
@@ -697,7 +655,6 @@ uint32_t Wheel(byte WheelPos)
 
 void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
- 
   for(j=0; j<256*1; j++) { // 5 cycles of all colors on wheel
     for(i=0; i< pixels.numPixels(); i++) {
       pixels.setPixelColor(i, Wheel(((i * 256 / pixels.numPixels()) + j) & 255));
@@ -707,9 +664,7 @@ void rainbowCycle(uint8_t wait) {
   }
 }
 
-void worm() {
-
- 
+void worm() { 
   int mydelay=100;
   int max=100;
   int r=max;
@@ -718,47 +673,46 @@ void worm() {
   int tail=3;
   int drop =20;
   for (int z=0;z<1;z++) {
-    
-   ClearLights();
-  for (int x=0;x<NUMPIXELS+6;x++){
-      pixels.setPixelColor(x, pixels.Color(r,g,b));
-      for (int y=x-1;y>=0;y--){
-        int col = max - (drop * y);
-        if (col < 0 ) {
-          col=0;
+    ClearLights();
+    for (int x=0;x<NUMPIXELS+6;x++){
+        pixels.setPixelColor(x, pixels.Color(r,g,b));
+        for (int y=x-1;y>=0;y--){
+          int col = max - (drop * y);
+          if (col < 0 ) {
+            col=0;
+          }
+          pixels.setPixelColor(x-y-1, col,col,col);  
         }
-        pixels.setPixelColor(x-y-1, col,col,col);  
-      }
-      pixels.show();
-      delay(mydelay);
-  }
+        pixels.show();
+        delay(mydelay);
+    }
   }
     
 }
 
 
 void fire() {
-int r = 200;
-int g = r-40;
-int b = 40;
-
-for (int y=0;y<10;y++){
+  int r = 200;
+  int g = r-40;
+  int b = 40;
   
-
-for(int x = 0; x <NUMPIXELS; x++)
-{
-int flicker = random(0,150);
-int r1 = r-flicker;
-int g1 = g-flicker;
-int b1 = b-flicker;
-if(g1<0) g1=0;
-if(r1<0) r1=0;
-if(b1<0) b1=0;
-pixels.setPixelColor(x,g1,r1, b1);
-}
-pixels.show();
-delay(random(50,150));
-}
+  for (int y=0;y<10;y++){
+    
+  
+    for(int x = 0; x <NUMPIXELS; x++)
+    {
+      int flicker = random(0,150);
+      int r1 = r-flicker;
+      int g1 = g-flicker;
+      int b1 = b-flicker;
+      if(g1<0) g1=0;
+      if(r1<0) r1=0;
+      if(b1<0) b1=0;
+      pixels.setPixelColor(x,g1,r1, b1);
+    }
+  pixels.show();
+  delay(random(50,150));
+  }
 }
 void rainbows() {
    rainbow(20);
@@ -778,10 +732,7 @@ ClearLights();
 }
 void loop() {
    
-  digitalWrite(BTPOWER,HIGH);
-
-  //temp = GetTemp();
-
+int testmode =0;
   testmode = digitalRead(IPIN);
   //Serial.println(testmode);
 
@@ -793,15 +744,12 @@ void loop() {
       }
       democounter++;
 
-
-        
-
    }else {
     
      String newinput = "";
      if (Serial.available())  {
   
-          tmpinput = tmpinput + Serial.readString();
+          String tmpinput = tmpinput + Serial.readString();
           Serial.print("Read:");
           Serial.println(tmpinput);
           
@@ -831,10 +779,6 @@ void loop() {
    }else if (demomode && democounter > 32){
      democounter=0;
    }
-
-   
-
-   
     if (run) {
        cycle();
      }
@@ -843,64 +787,28 @@ void loop() {
 //I2C stuff
 
 void receiveData(int byteCount){
- int inChar;
- 
- run=false;
-  while(Wire.available()){ 
-        
+   int inChar;
+   run=false;
+   while(Wire.available()){ 
+          inChar = Wire.read();
+          Serial.print("I2C Read Char:[");
+          Serial.println(inChar);
+          Serial.print("]");
+          inString += char(inChar);
+   }
+   Serial.print("I2C Read:");
+   Serial.println(inString);
+   if (inString.endsWith("|")){
+       String newinput=inString;
+       inString = "";
+       processInput(newinput.substring(0,newinput.length()));  
+   }
 
-        inChar = Wire.read();
-        Serial.print("I2C Read Char:[");
-        Serial.println(inChar);
-        Serial.print("]");
-        inString += char(inChar);
-    }
-
-
- Serial.print("I2C Read:");
- Serial.println(inString);
-          if (inString.endsWith("|")){
-              String newinput=inString;
-              inString = "";
-              processInput(newinput.substring(0,newinput.length()));  
-          }
-          
-//while(Wire.available()) {
-  //  number = Wire.read();
-
-//  if (number == 1){
-//   if (state == 0){
-//    digitalWrite(13, HIGH); // set the LED on
-//    state = 1;
-//   } else{
-//    digitalWrite(13, LOW); // set the LED off
-//    state = 0;
-//   }
-//  }
-// 
-//  if(number==2) {
-//   number = (int)temp;
-//  }
- //}
 }
  
 // callback for sending data
 void sendData(){
- Wire.write(number);
+  Wire.write(number);
 }
- 
-// Get the internal temperature of the arduino
-double GetTemp(void)
-{
- unsigned int wADC;
- double t;
- ADMUX = (_BV(REFS1) | _BV(REFS0) | _BV(MUX3));
- ADCSRA |= _BV(ADEN); // enable the ADC
- delay(20); // wait for voltages to become stable.
- ADCSRA |= _BV(ADSC); // Start the ADC
- while (bit_is_set(ADCSRA,ADSC));
- wADC = ADCW;
- t = (wADC - 324.31 ) / 1.22;
- return (t);
-}
+
 
