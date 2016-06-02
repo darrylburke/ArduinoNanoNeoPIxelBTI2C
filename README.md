@@ -52,3 +52,12 @@ gcc I2CClient.c -o I2CClient
 <h1> Android</h1>
 
 For android I use the BlueTooth Serial Controller program in the [Google Play Store](https://play.google.com/store/apps/details?id=nextprototypes.BTSerialController)
+
+<h1> Android SMS -> Bluetooth app</h1>
+
+The android is used to create an SMS to Bluetooth proxy for the arduino board.. the same commads can be texted to the phone and it will relay them to the arduino board.
+
+SMS the "?" message to get a response back with the commands to send.
+
+each command must start with a ".." to be relayed to the arduino.. 
+
