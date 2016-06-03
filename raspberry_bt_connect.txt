@@ -1,0 +1,40 @@
+bluetoothctl
+[NEW] Controller 00:1A:7D:DA:71:02 raspberrypi [default]
+[NEW] Device 20:15:12:04:36:11 HC-06
+[NEW] Device 24:4B:81:1D:71:54 Mr.Robot
+[bluetooth]# power on
+Changing power on succeeded
+[bluetooth]# agent on
+Agent registered
+[bluetooth]# default-agent
+Default agent request successful
+[bluetooth]# scan on
+Discovery started
+[CHG] Controller 00:1A:7D:DA:71:02 Discovering: yes
+[CHG] Device 20:15:12:04:36:11 LegacyPairing: yes
+[CHG] Device 20:15:12:04:36:11 RSSI: -53
+[bluetooth]# pair 20:15:12:04:36:11
+Attempting to pair with 20:15:12:04:36:11
+[CHG] Device 20:15:12:04:36:11 Connected: yes
+Request PIN code
+[agent] Enter PIN code: 1234
+[CHG] Device 20:15:12:04:36:11 Paired: yes
+Pairing successful
+[CHG] Device 20:15:12:04:36:11 Connected: no
+[bluetooth]# info 20:15:12:04:36:11
+Device 20:15:12:04:36:11
+	Name: HC-06
+	Alias: HC-06
+	Class: 0x001f00
+	Paired: yes
+	Trusted: yes
+	Blocked: no
+	Connected: no
+	LegacyPairing: yes
+	UUID: Serial Port               (00001101-0000-1000-8000-00805f9b34fb)
+[bluetooth]# connect 20:15:12:04:36:11
+Attempting to connect to 20:15:12:04:36:11
+[CHG] Device 20:15:12:04:36:11 Connected: yes
+Failed to connect: org.bluez.Error.NotAvailable
+[CHG] Device 20:15:12:04:36:11 Connected: no
+[bluetooth]# exit
