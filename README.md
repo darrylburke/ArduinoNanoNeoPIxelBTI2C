@@ -58,7 +58,7 @@ look at send_command.pl for sample to send vi perl
 
 For android I use the BlueTooth Serial Controller program in the [Google Play Store](https://play.google.com/store/apps/details?id=nextprototypes.BTSerialController)
 
-<h1> Android SMS -> Bluetooth app</h1>
+<h2> Android SMS -> Bluetooth app</h2>
 
 The android is used to create an SMS to Bluetooth proxy for the arduino board.. the same commads can be texted to the phone and it will relay them to the arduino board.
 
