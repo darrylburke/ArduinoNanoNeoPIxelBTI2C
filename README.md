@@ -38,6 +38,8 @@ Eg.  L10000102ffffff|50000809aaaaaa|
 ```
 
 <H1> Raspberry Pi </h1>
+
+<h2> I2C</h2>
 The raspberry pi I2C client can be used to send command to the Nano from the Pi.
 
 to build the program use
@@ -46,8 +48,11 @@ gcc I2CClient.c -o I2CClient
 ```
 *Note*  you can also send these commands via the USB cable to the Arduino from the Raspberry pi using a standard USB data cable.. it will also power the Nano from the Pi USB!
 
-
 ./I2CClient RAINBOWS\\|
+
+<h2> USB Bluetooth Dongle</h2>
+setup your dongle and connect (help example in raspberry_bt_connect.txt file)
+look at send_command.pl for sample to send vi perl 
 
 <h1> Android</h1>
 
